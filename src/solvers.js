@@ -16,8 +16,42 @@
 
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  var solution; //a matrix
+  
+  //create recursion function (it should take the current situation, and the rowIndex, which it's going to work on )
+  var findSolution = function(row) {
+    //iterator over one specific row
+    for (var i = 0; i < n; i++) {
+      //toggle the current position we are working on
+      matrix.togglePiece(row, i);
 
+      //if we are working on the final row
+      if (row === n - 1) {
+        //test whether we pass the conflicts detection
+        if (!matrix.hasAnyRooksConflicts()) {
+          console.log(JSON.stringify(matrix.rows()));
+          return true; 
+        }
+      } else {
+        //call next row, if next row return true
+        if (findSolution(row + 1) ) {
+          //if next row pass, return true
+          return true;
+        }
+      }
+      //toggle the current position we are working on back
+      matrix.togglePiece(row, i);
+    }      
+  };
+
+  //create a new board
+  var matrix = new Board({n: n});
+
+  //pass (0) into the recursion function;
+  findSolution(0);
+
+
+  solution = matrix.rows();
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
